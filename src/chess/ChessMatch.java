@@ -7,6 +7,7 @@ import chess.pieces.King;
 import chess.pieces.Rook;
 
 
+
 public class ChessMatch {
 
     private Board board;
@@ -26,10 +27,17 @@ public class ChessMatch {
         return mat;
     }
 
+    public boolean[][] possibleMoves(ChessPosition sourcePosition) {
+        Position position = sourcePosition.toPosition();
+        ValidateSourcePosition(position);
+        return board.piece(position).possibleMoves();
+    }
+
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
         ValidateSourcePosition(source);
+        ValidateTargetPosition(source, target);
         Piece capturedPiece = makeMove(source, target);
         return (ChessPiece)capturedPiece;
     }
@@ -47,6 +55,13 @@ public class ChessMatch {
         }
         if (!board.piece(position).isTheAnyPossibleMove()) {
             throw new ChessException("There is no possible moves for the chosen piece");
+        }
+    }
+
+    private void ValidateTargetPosition(Position source, Position target) {
+        if (board.piece(source).possibleMove(target)) {
+            throw new ChessException("The chosen piece can't move to target position");
+
         }
     }
 
